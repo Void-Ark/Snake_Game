@@ -61,7 +61,7 @@ alienSet = {Alien()}
 # bullet -------------------------------------------
 bulletImg = pygame.image.load("./images/bullet.png")
 bulletX, bulletY = 0, 0 
-bulletSpeed = 0.3 
+bulletSpeed = 0.5    #  bullet speed
 bulletState = False  # True -> bullet fired  # False -> ready to fire
 bulletSound = pygame.mixer.Sound("./audio/laser.wav")
 
@@ -135,7 +135,7 @@ while running :
     
     # new alien swan after some interval
     temp += 1 
-    if temp % 4000 == 0 : 
+    if temp % 3000 == 0 : 
         temp = 0 
         alienSet.add(Alien())
         
