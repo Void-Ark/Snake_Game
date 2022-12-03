@@ -23,6 +23,7 @@ class Apple:
         self.x = randint(0, 24)*SIZE
         self.y = randint(0, 19)*SIZE
 
+
 class Snake : 
     def __init__(self, parent_screen, lenght= 10) -> None:
         
@@ -92,16 +93,24 @@ class Game :
         pygame.init()  
            
         # setting screen size
-        self.surface = pygame.display.set_mode(size=(1000, 800)) 
+        self.surface = pygame.display.set_mode(size=(1000, 800))
     
         # choosing color (https://g.co/kgs/ccHb2A)
         self.surface.fill(BACKGROUND_COLOR)
+        
+        pygame.mixer.init()
         
         # making apple object 
         self.apple = Apple(self.surface) 
         
         # making snake object 
         self.snake = Snake(self.surface, 2)
+        
+        #crash sound 
+        self.crash_sound = pygame.mixer.music("./resources/crash.mp3")
+        
+        #eating sound 
+        self.eating_sound = pygame.mixer.music("resources/ding.mp3") 
         
         self.play() 
         
@@ -114,11 +123,13 @@ class Game :
         pygame.display.flip()
         
         if self.is_collision(self.snake.x[0], self.snake.y[0], self.apple.x, self.apple.y) : 
+            pygame.mixer.Sound.play(self.eating_sound)
             self.apple.move() 
             self.snake.increase_length()
             
         for i in range(1, self.snake.length) :
             if self.is_collision(self.snake.x[0], self.snake.y[0], self.snake.x[i], self.snake.y[i]) :
+                pygame.mixer.Sound.play(self.crash_sound)
                 raise "game over"
         
     def is_collision(self, x1, y1, x2, y2) : 
@@ -132,7 +143,24 @@ class Game :
        score = font.render(f"Score: {self.snake.length}", True, (255, 255, 255)) 
        self.surface.blit(score, (800, 10))  
     
+    def show_game_over(self) : 
+        self.surface.fill(color=BACKGROUND_COLOR) 
+        font = pygame.font.SysFont("Arial", 30) 
+        line1 = font.render(f"Game is Over. Your Score: {self.snake.length}", True, (255, 255, 255)) 
+        self.surface.blit(line1, (200, 300)) 
+        line2 = font.render("Please, click Enter to play Again.", True, (255, 255, 255)) 
+        self.surface.blit(line2, (200, 350)) 
+        pygame.display.flip()
+
+    def reset(self): 
+         # making apple object 
+        self.apple = Apple(self.surface) 
+        
+        # making snake object 
+        self.snake = Snake(self.surface, 2)
+        
     def run(self) : 
+        pause = False 
         running = True 
         while running : 
             for event in pygame.event.get():
@@ -140,25 +168,34 @@ class Game :
                     running = False 
                 elif event.type == KEYDOWN : 
 
+                    if event.key == K_RETURN :
+                        pause = False 
+                    
                     if event.key == K_ESCAPE :
                         running = False 
+                    
+                    if not pause :
+                        if event.key == K_UP : 
+                            self.snake.dir = 'up'
 
-                    if event.key == K_UP : 
-                        self.snake.dir = 'up'
+                        if event.key == K_DOWN : 
+                            self.snake.dir = 'down'
 
-                    if event.key == K_DOWN : 
-                        self.snake.dir = 'down'
+                        if event.key == K_LEFT : 
+                            self.snake.dir = 'left'
 
-                    if event.key == K_LEFT : 
-                        self.snake.dir = 'left'
-
-                    if event.key == K_RIGHT : 
-                        self.snake.dir = 'right'
+                        if event.key == K_RIGHT : 
+                            self.snake.dir = 'right'
             try :
-                self.play()
-            except :
-                pass 
+                if not pause : 
+                    self.play()
+            except Exception as e :
+                pause = True 
+                self.show_game_over()
+                self.reset()
             time.sleep(0.3)
+            
+
 
 if __name__ == "__main__" : 
     Game() 
