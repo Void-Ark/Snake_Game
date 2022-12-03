@@ -5,6 +5,7 @@ from random import randint
 from pygame.locals import *
 
 SIZE = 40
+BACKGROUND_COLOR = (110, 110, 5)
 
 class Apple: 
     def __init__(self, parent_screen) -> None:
@@ -94,7 +95,7 @@ class Game :
         self.surface = pygame.display.set_mode(size=(1000, 800)) 
     
         # choosing color (https://g.co/kgs/ccHb2A)
-        self.surface.fill(color=(110, 110, 5))
+        self.surface.fill(BACKGROUND_COLOR)
         
         # making apple object 
         self.apple = Apple(self.surface) 
@@ -118,7 +119,7 @@ class Game :
             
         for i in range(1, self.snake.length) :
             if self.is_collision(self.snake.x[0], self.snake.y[0], self.snake.x[i], self.snake.y[i]) :
-                pass
+                raise "game over"
         
     def is_collision(self, x1, y1, x2, y2) : 
         if x2 <= x1 < x2 + SIZE and y2 <= y1 < y2 + SIZE : 
@@ -153,7 +154,10 @@ class Game :
 
                     if event.key == K_RIGHT : 
                         self.snake.dir = 'right'
-            self.play()
+            try :
+                self.play()
+            except :
+                pass 
             time.sleep(0.3)
 
 if __name__ == "__main__" : 
