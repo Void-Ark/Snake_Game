@@ -98,7 +98,6 @@ class Game :
         # choosing color (https://g.co/kgs/ccHb2A)
         self.surface.fill(BACKGROUND_COLOR)
         
-        pygame.mixer.init()
         
         # making apple object 
         self.apple = Apple(self.surface) 
@@ -107,10 +106,10 @@ class Game :
         self.snake = Snake(self.surface, 2)
         
         #crash sound 
-        self.crash_sound = pygame.mixer.music("./resources/crash.mp3")
+        self.crash_sound = pygame.mixer.Sound("resources/crash.mp3")
         
         #eating sound 
-        self.eating_sound = pygame.mixer.music("resources/ding.mp3") 
+        self.eating_sound = pygame.mixer.Sound("resources/ding.mp3") 
         
         self.play() 
         
