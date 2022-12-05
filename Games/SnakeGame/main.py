@@ -105,11 +105,17 @@ class Game :
         # making snake object 
         self.snake = Snake(self.surface, 2)
         
+        pygame.mixer.init()
+        
+        pygame.mixer.music.load("audio/background.wav")
+        pygame.mixer.music.play(-1)
+        
+        
         #crash sound 
-        self.crash_sound = pygame.mixer.Sound("resources/crash.mp3")
+        self.crash_sound = pygame.mixer.Sound("audio/explosion.wav")
         
         #eating sound 
-        self.eating_sound = pygame.mixer.Sound("resources/ding.mp3") 
+        self.eating_sound = pygame.mixer.Sound("audio/laser.wav") 
         
         self.play() 
         
